@@ -1,0 +1,149 @@
+.profile {
+  max-width: 880px;
+  margin: 50px auto;
+  color: #fff;
+  font-family: "Inter", sans-serif;
+  display: flex;
+  justify-content: space-between;
+}
+
+.profile__picture-info {
+  display: flex;
+}
+
+.profile__picture {
+  width: 120px;
+  height: 120px;
+  border-radius: 70px;
+}
+
+.profile__info {
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  margin-left: 30px;
+}
+
+.profile__info-button {
+  display: flex;
+  cursor: pointer;
+}
+
+.profile__name {
+  max-width: 880px;
+  font-size: 42px;
+  line-height: 48px;
+  font-weight: 500;
+  margin: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.profile__ocupation {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 21.78px;
+  margin: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.profile__edit-button {
+  width: 24px;
+  height: 24px;
+  background-color: #000;
+  margin-left: 10px;
+  margin-top: 15px;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.profile__edit-button:hover {
+  opacity: 0.5;
+}
+
+.profile__button-add-card {
+  width: 150px;
+  height: 50px;
+  background-color: #000;
+  border: none;
+  margin: 30px 0;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.profile__button-add-card:hover {
+  opacity: 0.5;
+}
+
+@media screen and (max-width: 1279px) {
+  .profile {
+    margin: 50px auto;
+    max-width: 700px;
+  }
+
+  .profile__name {
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 30px;
+  }
+
+  .profile__ocupation {
+    font-size: 21px;
+    font-weight: 400;
+    line-height: 20px;
+    margin: 10px 0;
+  }
+
+  .profile__edit-button {
+    margin: 5px 0 0 5px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 50px auto;
+  }
+
+  .profile__picture-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .profile__picture {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+  }
+
+  .profile__info {
+    width: 220px;
+    align-items: center;
+    margin: 20px 0;
+  }
+
+  .profile__name {
+    font-weight: 500;
+    font-size: 21px;
+    line-height: 26px;
+  }
+
+  .profile__ocupation {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 17px;
+    margin: 10px 0;
+  }
+
+  .profile__edit-button {
+    width: 18px;
+    height: 18px;
+    margin: 5px 0 0 8px;
+  }
+}

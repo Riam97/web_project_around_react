@@ -1,0 +1,119 @@
+.popup {
+  display: none;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup__opened {
+  display: flex;
+}
+
+.popup__close-button {
+  position: absolute;
+  top: -35px;
+  right: -45px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.popup__close-button:hover {
+  opacity: 0.5;
+}
+
+.popup__form {
+  width: 430px;
+  height: 330px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border-radius: 10px;
+}
+
+.popup__form-title {
+  color: #000;
+  margin: 35px;
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 29px;
+}
+
+.popup__input {
+  width: 358px;
+  height: 28px;
+  margin: 0 auto 5px;
+  border: none;
+  border-bottom: 1px #545454 solid;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.popup__input:invalid {
+  border-bottom: 1px red solid;
+}
+
+.popup__input-error {
+  height: 28px;
+  margin: 0 36px 5px;
+}
+
+.popup__input-error_active {
+  color: red;
+  font-size: 12px;
+  line-height: 14.52px;
+}
+
+.popup__button {
+  width: 358px;
+  height: 50px;
+  background-color: #000;
+  color: #fff;
+  margin: 0 auto;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.popup__button_inactive {
+  color: #000;
+  background-color: #fff;
+  border: 1px #000 solid;
+}
+
+.popup__button:hover {
+  opacity: 0.5;
+}
+
+.popup__card-image {
+  height: 530px;
+}
+
+.popup__container {
+  position: relative;
+}
+
+.popup__card-title {
+  color: #fff;
+}
+
+@media screen and (max-width: 767px) {
+  .popup__form {
+    max-width: 240px;
+    height: 322px;
+  }
+
+  .popup__input {
+    max-width: 215px;
+  }
+
+  .popup__button {
+    max-width: 215px;
+  }
+}
