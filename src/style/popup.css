@@ -31,11 +31,9 @@
 .popup__form {
   width: 430px;
   height: 330px;
-  background-color: #fff;
   display: flex;
   flex-direction: column;
   position: relative;
-  border-radius: 10px;
 }
 
 .popup__form-title {
@@ -49,7 +47,7 @@
 .popup__input {
   width: 358px;
   height: 28px;
-  margin: 0 auto 5px;
+  margin: 0 auto 25px;
   border: none;
   border-bottom: 1px #545454 solid;
   box-sizing: border-box;
@@ -97,6 +95,10 @@
 
 .popup__container {
   position: relative;
+  width: 430px;
+  height: 330px;
+  background-color: #fff;
+  border-radius: 10px;
 }
 
 .popup__card-title {
