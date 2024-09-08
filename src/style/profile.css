@@ -33,16 +33,16 @@
   width: 40px;
   height: 40px;
   margin: auto;
-  opacity: 0; /* Oculto por defecto */
+  opacity: 0;
   transition: opacity 0.3s ease;
 }
 
 .profile__avatar-container:hover .profile__avatar-edit {
-  opacity: 1; /* Visible al hacer hover */
+  opacity: 1;
 }
 
 .profile__avatar-container:hover .profile__avatar {
-  opacity: 0.5; /* Reducir la opacidad del avatar cuando el mouse está encima */
+  opacity: 0.5;
 }
 
 .profile__info {

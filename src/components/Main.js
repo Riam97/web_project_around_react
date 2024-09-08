@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import avatar from "../images/Avatar.png";
 import avatarVector from "../images/avatarVector.png";
 import vectorEditButton from "../images/vectorEditButton.png";
-import vectorCardButton from "../images/vectorCardButton.png";
 import addButton from "../images/addButton.png";
 import Api from "../utils/api.js";
+import Card from "./Card.js";
 
 function Main({
   onEditProfileClick,
@@ -15,37 +15,34 @@ function Main({
   const [userName, setUserName] = useState("");
   const [userDescription, setUserDescription] = useState("");
   const [userAvatar, setUserAvatar] = useState("");
-  const [cards, setCards] = useState([]); // Estado para las tarjetas
+  const [cards, setCards] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
 
   useEffect(() => {
-    // Solicitud para obtener la información del usuario
     Api.getUserInfo()
       .then((data) => {
         setUserName(data.name || "");
         setUserDescription(data.about || "");
         setUserAvatar(data.avatar || "");
-        setCurrentUser(data); // Almacenar el usuario actual
+        setCurrentUser(data);
       })
       .catch((error) => {
         console.error("Error fetching user info:", error);
       });
 
-    // Segunda solicitud para obtener las tarjetas
     Api.getInitialCards()
       .then((data) => {
-        setCards(data); // Guardamos las tarjetas en el estado
+        setCards(data);
       })
       .catch((error) => {
         console.error("Error fetching cards:", error);
       });
   }, []);
 
-  // Función para manejar el "like"
   const handleLikeClick = (e, card) => {
-    e.stopPropagation(); // Evita que se dispare el evento onCardClick
+    e.stopPropagation();
 
-    const isLiked = card.likes.some((like) => like._id === currentUser._id); // Verificar si el usuario actual ha dado like
+    const isLiked = card.likes.some((like) => like._id === currentUser._id);
 
     if (isLiked) {
       Api.likeCard(card._id, isLiked)
@@ -88,9 +85,7 @@ function Main({
           </div>
           <div className="profile__info">
             <div className="profile__info-button">
-              <p className="profile__name">
-                {userName.name || currentUser.name}
-              </p>
+              <p className="profile__name">{currentUser.name}</p>
               <button
                 className="profile__edit-button"
                 onClick={onEditProfileClick}
@@ -115,33 +110,13 @@ function Main({
       </section>
 
       <section className="cards">
-        {/* Mostrar tarjetas usando el template anterior */}
         {cards.map((card) => (
-          <div
+          <Card
             key={card._id}
-            className="card"
-            onClick={() => onCardClick(card)}
-          >
-            {/* Imagen de la tarjeta */}
-            <img
-              className="card__image"
-              src={card.link}
-              alt={card.name}
-              style={{ backgroundImage: `url(${card.link})` }}
-            />
-            <div className="card__text">
-              {/* Nombre de la tarjeta */}
-              <h2 className="card__title">{card.name}</h2>
-              <div className="card__like">
-                <button
-                  className="card__like-button"
-                  onClick={(e) => handleLikeClick(e, card)}
-                ></button>
-                {/* Número de likes */}
-                <span className="card__like-number">{card.likes.length}</span>
-              </div>
-            </div>
-          </div>
+            card={card}
+            onCardClick={onCardClick}
+            handleLikeClick={handleLikeClick}
+          />
         ))}
       </section>
     </main>
