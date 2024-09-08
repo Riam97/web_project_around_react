@@ -42,6 +42,15 @@
   max-width: 220px;
 }
 
+.card__like {
+  display: flex;
+  flex-direction: column;
+}
+
+.card__like-number {
+  margin: 0 auto;
+}
+
 .card__like-button {
   background-image: url(../images/vectorCardButton.png);
   background-position: center;

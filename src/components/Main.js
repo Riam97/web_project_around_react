@@ -4,7 +4,7 @@ import avatarVector from "../images/avatarVector.png";
 import vectorEditButton from "../images/vectorEditButton.png";
 import vectorCardButton from "../images/vectorCardButton.png";
 import addButton from "../images/addButton.png";
-import api from "../utils/api";
+import Api from "../utils/api.js";
 
 function Main({
   onEditProfileClick,
@@ -15,30 +15,56 @@ function Main({
   const [userName, setUserName] = useState("");
   const [userDescription, setUserDescription] = useState("");
   const [userAvatar, setUserAvatar] = useState("");
-  const [cards, setCards] = useState([]);
+  const [cards, setCards] = useState([]); // Estado para las tarjetas
+  const [currentUser, setCurrentUser] = useState({});
 
   useEffect(() => {
-    api
-      .getUserInfo()
+    // Solicitud para obtener la información del usuario
+    Api.getUserInfo()
       .then((data) => {
         setUserName(data.name || "");
         setUserDescription(data.about || "");
         setUserAvatar(data.avatar || "");
+        setCurrentUser(data); // Almacenar el usuario actual
       })
       .catch((error) => {
         console.error("Error fetching user info:", error);
       });
 
-    api
-      .getInitialCards()
+    // Segunda solicitud para obtener las tarjetas
+    Api.getInitialCards()
       .then((data) => {
-        console.log(data);
-        setCards(data);
+        setCards(data); // Guardamos las tarjetas en el estado
       })
       .catch((error) => {
         console.error("Error fetching cards:", error);
       });
   }, []);
+
+  // Función para manejar el "like"
+  const handleLikeClick = (e, card) => {
+    e.stopPropagation(); // Evita que se dispare el evento onCardClick
+
+    const isLiked = card.likes.some((like) => like._id === currentUser._id); // Verificar si el usuario actual ha dado like
+
+    if (isLiked) {
+      Api.likeCard(card._id, isLiked)
+        .then((updatedCard) => {
+          setCards((prevCards) =>
+            prevCards.map((c) => (c._id === card._id ? updatedCard : c))
+          );
+        })
+        .catch((err) => console.log(err));
+    } else {
+      Api.likeCard(card._id)
+        .then((updatedCard) => {
+          setCards((state) =>
+            state.map((c) => (c._id === card._id ? updatedCard : c))
+          );
+        })
+        .catch((err) => console.log(err));
+    }
+  };
 
   return (
     <main>
@@ -49,7 +75,7 @@ function Main({
               className="profile__avatar"
               id="avatar"
               alt="Foto de perfil"
-              src={avatar}
+              src={userAvatar || avatar}
               style={{ backgroundImage: `url(${userAvatar})` }}
             />
             <img
@@ -62,7 +88,9 @@ function Main({
           </div>
           <div className="profile__info">
             <div className="profile__info-button">
-              <p className="profile__name">{userName}</p>
+              <p className="profile__name">
+                {userName.name || currentUser.name}
+              </p>
               <button
                 className="profile__edit-button"
                 onClick={onEditProfileClick}
@@ -74,7 +102,7 @@ function Main({
                 />
               </button>
             </div>
-            <p className="profile__occupation">{userDescription}</p>
+            <p className="profile__occupation">{currentUser.about}</p>
           </div>
         </div>
         <button className="profile__button-add-card" onClick={onAddPlaceClick}>
@@ -87,22 +115,31 @@ function Main({
       </section>
 
       <section className="cards">
+        {/* Mostrar tarjetas usando el template anterior */}
         {cards.map((card) => (
           <div
             key={card._id}
             className="card"
             onClick={() => onCardClick(card)}
           >
-            <img className="card__image" src={card.link} alt={card.name} />{" "}
-            <h2 className="card__title">{card.name}</h2>
-            <div className="card__like">
-              <button
-                className="card__like-button"
-                onClick={(e) => handleLikeClick(e, card)}
-              >
-                <img src={vectorCardButton} alt="Like button" />
-              </button>
-              <span className="card__like-number">{card.likes.length}</span>
+            {/* Imagen de la tarjeta */}
+            <img
+              className="card__image"
+              src={card.link}
+              alt={card.name}
+              style={{ backgroundImage: `url(${card.link})` }}
+            />
+            <div className="card__text">
+              {/* Nombre de la tarjeta */}
+              <h2 className="card__title">{card.name}</h2>
+              <div className="card__like">
+                <button
+                  className="card__like-button"
+                  onClick={(e) => handleLikeClick(e, card)}
+                ></button>
+                {/* Número de likes */}
+                <span className="card__like-number">{card.likes.length}</span>
+              </div>
             </div>
           </div>
         ))}

@@ -90,7 +90,8 @@
 }
 
 .popup__card-image {
-  height: 530px;
+  height: 400px;
+  width: 530px;
 }
 
 .popup__container {

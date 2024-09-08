@@ -13,7 +13,10 @@ class Api {
           return Promise.reject(`ERROR: ${res.status}`);
         }
       })
-      .catch((error) => Promise.reject(error));
+      .catch((error) => {
+        console.error("Fetch error: ", error);
+        return Promise.reject(error);
+      });
   }
 
   getInitialCards() {
@@ -23,6 +26,7 @@ class Api {
   getUserInfo() {
     return this._fetch(`${this.baseUrl}/users/me`, { headers: this.headers });
   }
+
   likeCard(id, isLiked) {
     const method = isLiked ? "DELETE" : "PUT";
     return this._fetch(`${this.baseUrl}/cards/likes/${id}`, {
@@ -47,6 +51,7 @@ class Api {
       body: JSON.stringify({ name, about }),
     });
   }
+
   updateAvatar(link) {
     return this._fetch(`${this.baseUrl}/users/me/avatar`, {
       method: "PATCH",
@@ -56,6 +61,7 @@ class Api {
       body: JSON.stringify({ avatar: link }),
     });
   }
+
   getNewCards({ name, link }) {
     return this._fetch(`${this.baseUrl}/cards`, {
       method: "POST",
