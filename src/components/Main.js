@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import avatar from "../images/Avatar.png";
 import avatarVector from "../images/avatarVector.png";
 import vectorEditButton from "../images/vectorEditButton.png";
 import addButton from "../images/addButton.png";
-import Api from "../utils/api.js";
-import Card from "./Card.js";
+import Api from "../utils/api";
+import Card from "./Card";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 function Main({
   onEditProfileClick,
@@ -12,24 +13,10 @@ function Main({
   onEditAvatarClick,
   onCardClick,
 }) {
-  const [userName, setUserName] = useState("");
-  const [userDescription, setUserDescription] = useState("");
-  const [userAvatar, setUserAvatar] = useState("");
+  const currentUser = useContext(CurrentUserContext);
   const [cards, setCards] = useState([]);
-  const [currentUser, setCurrentUser] = useState({});
 
   useEffect(() => {
-    Api.getUserInfo()
-      .then((data) => {
-        setUserName(data.name || "");
-        setUserDescription(data.about || "");
-        setUserAvatar(data.avatar || "");
-        setCurrentUser(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching user info:", error);
-      });
-
     Api.getInitialCards()
       .then((data) => {
         setCards(data);
@@ -39,29 +26,25 @@ function Main({
       });
   }, []);
 
-  const handleLikeClick = (e, card) => {
-    e.stopPropagation();
-
+  function handleCardLike(card) {
     const isLiked = card.likes.some((like) => like._id === currentUser._id);
 
-    if (isLiked) {
-      Api.likeCard(card._id, isLiked)
-        .then((updatedCard) => {
-          setCards((prevCards) =>
-            prevCards.map((c) => (c._id === card._id ? updatedCard : c))
-          );
-        })
-        .catch((err) => console.log(err));
-    } else {
-      Api.likeCard(card._id)
-        .then((updatedCard) => {
-          setCards((state) =>
-            state.map((c) => (c._id === card._id ? updatedCard : c))
-          );
-        })
-        .catch((err) => console.log(err));
-    }
-  };
+    Api.changeLikeCardStatus(card._id, !isLiked)
+      .then((updatedCard) => {
+        setCards((state) =>
+          state.map((c) => (c._id === card._id ? updatedCard : c))
+        );
+      })
+      .catch((err) => console.log(err));
+  }
+
+  function handleCardDelete(card) {
+    Api.deleteCard(card._id)
+      .then(() => {
+        setCards((state) => state.filter((c) => c._id !== card._id));
+      })
+      .catch((err) => console.error(err));
+  }
 
   return (
     <main>
@@ -72,8 +55,7 @@ function Main({
               className="profile__avatar"
               id="avatar"
               alt="Foto de perfil"
-              src={userAvatar || avatar}
-              style={{ backgroundImage: `url(${userAvatar})` }}
+              src={currentUser.avatar || avatar}
             />
             <img
               className="profile__avatar-edit"
@@ -115,7 +97,8 @@ function Main({
             key={card._id}
             card={card}
             onCardClick={onCardClick}
-            handleLikeClick={handleLikeClick}
+            onCardLike={handleCardLike}
+            onCardDelete={handleCardDelete}
           />
         ))}
       </section>

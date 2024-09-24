@@ -1,7 +1,6 @@
-import React from "react";
 import closeIcon from "../images/closeIcon.png";
 
-function PopupWithForm({ title, name, isOpen, onClose, children }) {
+function PopupWithForm({ title, name, isOpen, onClose, onSubmit, children }) {
   return (
     <div
       className={`popup popup_type_${name} ${isOpen ? "popup__opened" : ""}`}
@@ -19,6 +18,7 @@ function PopupWithForm({ title, name, isOpen, onClose, children }) {
           className={`popup__form popup__form_${name}`}
           name={name}
           noValidate
+          onSubmit={onSubmit}
         >
           {children}
           <button className="popup__button" type="submit">
