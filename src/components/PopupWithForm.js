@@ -1,3 +1,4 @@
+import React from "react";
 import closeIcon from "../images/closeIcon.png";
 
 function PopupWithForm({ title, name, isOpen, onClose, onSubmit, children }) {
@@ -17,8 +18,8 @@ function PopupWithForm({ title, name, isOpen, onClose, onSubmit, children }) {
         <form
           className={`popup__form popup__form_${name}`}
           name={name}
-          noValidate
           onSubmit={onSubmit}
+          noValidate
         >
           {children}
           <button className="popup__button" type="submit">

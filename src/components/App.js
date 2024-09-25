@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Main from "./Main";
 import EditProfilePopup from "./EditProfilePopup";
-import PopupWithForm from "./PopupWithForm";
+import EditAvatarPopup from "./EditAvatarPopup";
+import AddPlacePopup from "./AddPlacePopup";
 import Image from "./Image";
 import Api from "../utils/api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
@@ -19,9 +20,6 @@ function App() {
   });
 
   const [cards, setCards] = useState([]);
-  const [avatarLink, setAvatarLink] = useState("");
-  const [cardTitle, setCardTitle] = useState("");
-  const [cardLink, setCardLink] = useState("");
 
   useEffect(() => {
     Api.getUserInfo()
@@ -58,6 +56,43 @@ function App() {
       .catch((err) => console.error("Error updating user info: ", err));
   };
 
+  const handleUpdateAvatar = (userData) => {
+    Api.updateAvatar(userData.avatar)
+      .then((updatedUser) => {
+        setCurrentUser(updatedUser);
+        closeAllPopups();
+      })
+      .catch((err) => console.error("Error updating avatar: ", err));
+  };
+
+  const handleAddPlaceSubmit = (newCardData) => {
+    Api.getNewCards(newCardData)
+      .then((newCard) => {
+        setCards([newCard, ...cards]);
+        closeAllPopups();
+      })
+      .catch((err) => console.error("Error adding new card: ", err));
+  };
+
+  const handleCardLike = (card) => {
+    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    Api.changeLikeCardStatus(card._id, !isLiked)
+      .then((newCard) => {
+        setCards((state) =>
+          state.map((c) => (c._id === card._id ? newCard : c))
+        );
+      })
+      .catch((err) => console.error("Error liking card: ", err));
+  };
+
+  const handleCardDelete = (card) => {
+    Api.deleteCard(card._id)
+      .then(() => {
+        setCards((state) => state.filter((c) => c._id !== card._id));
+      })
+      .catch((err) => console.error("Error deleting card: ", err));
+  };
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <Main
@@ -66,7 +101,8 @@ function App() {
         onEditAvatarClick={handleEditAvatarClick}
         onCardClick={handleCardClick}
         cards={cards}
-        setCards={setCards}
+        onCardLike={handleCardLike}
+        onCardDelete={handleCardDelete}
       />
 
       <EditProfilePopup
@@ -75,66 +111,17 @@ function App() {
         onUpdateUser={handleUpdateUser}
       />
 
-      <PopupWithForm
-        title="Actualizar foto de perfil"
-        name="avatar"
+      <EditAvatarPopup
         isOpen={isEditAvatarPopupOpen}
         onClose={closeAllPopups}
-        onSubmit={(e) => {
-          e.preventDefault();
-          Api.updateAvatar(avatarLink)
-            .then((updatedUser) => {
-              setCurrentUser(updatedUser);
-              closeAllPopups();
-            })
-            .catch((err) => console.error("Error updating avatar: ", err));
-        }}
-      >
-        <input
-          type="url"
-          name="avatar"
-          className="popup__input"
-          placeholder="Enlace de la nueva imagen"
-          value={avatarLink}
-          onChange={(e) => setAvatarLink(e.target.value)}
-          required
-        />
-      </PopupWithForm>
+        onUpdateAvatar={handleUpdateAvatar}
+      />
 
-      <PopupWithForm
-        title="Nuevo lugar"
-        name="add-card"
+      <AddPlacePopup
         isOpen={isAddPlacePopupOpen}
         onClose={closeAllPopups}
-        onSubmit={(e) => {
-          e.preventDefault();
-          Api.getNewCards({ name: cardTitle, link: cardLink })
-            .then((newCard) => {
-              setCards([newCard, ...cards]);
-              closeAllPopups();
-            })
-            .catch((err) => console.error("Error adding new card: ", err));
-        }}
-      >
-        <input
-          type="text"
-          name="title"
-          className="popup__input"
-          placeholder="Título del lugar"
-          value={cardTitle}
-          onChange={(e) => setCardTitle(e.target.value)}
-          required
-        />
-        <input
-          type="url"
-          name="link"
-          className="popup__input"
-          placeholder="Enlace de la imagen"
-          value={cardLink}
-          onChange={(e) => setCardLink(e.target.value)}
-          required
-        />
-      </PopupWithForm>
+        onAddPlaceSubmit={handleAddPlaceSubmit}
+      />
 
       <Image card={selectedCard} onClose={closeAllPopups} />
     </CurrentUserContext.Provider>

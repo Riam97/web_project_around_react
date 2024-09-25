@@ -27,12 +27,18 @@ class Api {
     return this._fetch(`${this.baseUrl}/users/me`, { headers: this.headers });
   }
 
-  likeCard(id, isLiked) {
-    const method = isLiked ? "DELETE" : "PUT";
-    return this._fetch(`${this.baseUrl}/cards/likes/${id}`, {
-      method: method,
-      headers: this.headers,
-    });
+  changeLikeCardStatus(cardId, isLiked) {
+    return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
+      method: isLiked ? "DELETE" : "PUT",
+      headers: this._headers,
+    }).then(this._checkResponse);
+  }
+
+  _checkResponse(res) {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Error: ${res.status}`);
   }
 
   deleteCard(id) {
@@ -77,5 +83,13 @@ export const api = new Api("https://around.nomoreparties.co/v1/web_es_12", {
   authorization: "50b6f104-4531-48f6-93b8-d385b9bebae9",
   "Content-Type": "application/json",
 });
+
+/* const api = new Api({
+  baseUrl: process.env.REACT_APP_API_BASE_URL,
+  headers: {
+    authorization: process.env.REACT_APP_API_TOKEN,
+    "Content-Type": "application/json",
+  },
+}); */
 
 export default api;
