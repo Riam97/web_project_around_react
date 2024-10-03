@@ -98,7 +98,7 @@ function App() {
   const handleCardLike = (card) => {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
     api
-      .likeCard(card._id, isLiked)
+      .changeLikeCardStatus(card._id, isLiked)
       .then((res) => {
         setCards((state) => state.map((c) => (c._id === card._id ? res : c)));
       })
@@ -108,22 +108,15 @@ function App() {
   };
 
   const handleCardDelete = (card) => {
-    setCardToDelete(card);
-  };
-
-  const handleSubmitConfirm = (event) => {
-    event.preventDefault();
-    if (cardToDelete) {
-      api
-        .deleteCard(cardToDelete._id)
-        .then(() => {
-          setCards((state) => state.filter((c) => c._id !== cardToDelete._id));
-          closeAllPopups();
-        })
-        .catch((err) => {
-          console.error("Error deleting card:", err);
-        });
-    }
+    api
+      .deleteCard(card._id)
+      .then(() => {
+        setCards((state) => state.filter((c) => c._id !== card._id));
+        closeAllPopups();
+      })
+      .catch((err) => {
+        console.error("Error deleting card:", err);
+      });
   };
 
   const handleEditProfileClick = () => {
